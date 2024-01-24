@@ -2,72 +2,58 @@ package org.iesalandalus.programacion.reservashotel.dominio;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Huesped {
-
-    private final String ER_TELEFONO= "(?:\\+34 )?(9\\d{2}) \\d{6}|(9\\d) \\d{7}";
-    private final String ER_CORREO= "\\w+[\\.\\w]*@\\w+[\\.\\w]*\\.\\w{2,5}\\b\\s?";
-    private final String ER_DNI= "([0-9]{8})([A-Za-z])";
-    public final String FORMATO_FECHA= "dd/MM/yyyy";
     private String nombre;
     private String telefono;
     private String correo;
     private String dni;
     private LocalDate fechaNacimiento;
 
+    private static final String ER_TELEFONO = "^(\\+\\d{1,3})?\\d{9,15}$";
+    private static final String ER_CORREO = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+    private static final String FORMATO_FECHA = "dd-MM-yyyy";
+
 
     private String formateaNombre(String nombre) {
-        /* Quitamos los espacios en blanco, dividimos el nombre en las palabras que hayan y damos formato
-        al nombre, poniento la primera letra de cada palabra en mayusculas */
-
-        nombre = nombre.trim();
-        String[] palabras = nombre.split("\\s+");
-
-        StringBuilder nombreFormateado = new StringBuilder();
+        String[] palabras = nombre.split(" ");
+        StringBuilder resultado = new StringBuilder();
         for (String palabra : palabras) {
-            if (!palabra.isEmpty()) {
-                palabra = palabra.substring(0, 1).toUpperCase() + palabra.substring(1).toLowerCase();
-                nombreFormateado.append(palabra).append(" ");
-            }
-
+            resultado.append(palabra.substring(0, 1).toUpperCase()).append(palabra.substring(1).toLowerCase()).append(" ");
         }
-        return nombreFormateado.toString().trim();
+        return resultado.toString().trim();
     }
 
-    private Boolean comprobarLetraDni (String dni){
+    private void comprobarLetraDni(String dni) {
+        Pattern patron = Pattern.compile("^(\\d{8})([A-Za-z])$");
+        Matcher matcher = patron.matcher(dni);
 
-        //Comprobamos que la letra es válida, para ello necesitamos el resto de dividir el número entre 23
+        if (matcher.matches()) {
+            String letrasValidas = "TRWAGMYFPDXBNJZSQVHLCKE";
+            int numero = Integer.parseInt(matcher.group(1));
+            int indice = numero % 23;
+            char letraCalculada = letrasValidas.charAt(indice);
 
-        Pattern patron;
-        Matcher comparador;
-        Boolean comprobacion;
-        patron = Pattern.compile(ER_DNI);
-        comparador = patron.matcher(dni);
-        int restoVeintitres;
-        String letrasDni = "TRWAGMYFPDXBNJZSQVHLCKE";
-        restoVeintitres= Integer.parseInt(comparador.group(1))%23;
-        String letraDni=comparador.group(2);
-
-        //Si la posicion del resto del número entre 23 en el String letrasDni coincide con nuestra letra, es valida
-
-        if (letraDni.charAt(0)==letrasDni.charAt(restoVeintitres))
-            comprobacion=true;
-        else
-            comprobacion=false;
-
-        return comprobacion;
-
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = formateaNombre(nombre);
+            if (letraCalculada != matcher.group(2).toUpperCase().charAt(0)) {
+                throw new IllegalArgumentException("Letra del DNI incorrecta");
+            }
+        } else {
+            throw new IllegalArgumentException("Formato de DNI no válido");
+        }
     }
 
     public String getNombre() {
         return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        if (!nombre.matches("^[A-Z][a-z]+( [A-Z][a-z]+)*$")) {
+            throw new IllegalArgumentException("Formato de nombre no válido");
+        }
+        this.nombre = formateaNombre(nombre);
     }
 
     public String getTelefono() {
@@ -75,16 +61,10 @@ public class Huesped {
     }
 
     public void setTelefono(String telefono) {
-
-        Pattern patron;
-        Matcher comparador;
-
-        patron = Pattern.compile(ER_TELEFONO);
-        comparador = patron.matcher(telefono);
-        if (!comparador.matches())
-            this.telefono = telefono;
-        else
-            throw new IllegalArgumentException("El número de teléfono no tiene un formato válido");
+        if (!telefono.matches(ER_TELEFONO)) {
+            throw new IllegalArgumentException("Formato de teléfono no válido");
+        }
+        this.telefono = telefono;
     }
 
     public String getCorreo() {
@@ -92,96 +72,61 @@ public class Huesped {
     }
 
     public void setCorreo(String correo) {
-
-
-        Pattern patron;
-        Matcher comparador;
-
-        patron = Pattern.compile(ER_CORREO);
-        comparador = patron.matcher(correo);
-
-        if (comparador.find())
-            this.correo = correo;
-        else
-            throw new IllegalArgumentException("El correo electrónico no tiene un formato válido");
+        if (!correo.matches(ER_CORREO)) {
+            throw new IllegalArgumentException("Formato de correo no válido");
+        }
+        this.correo = correo;
     }
-
 
     public String getDni() {
         return dni;
     }
 
-    private void setDni(String dni) {
-
-        //comprobamos si el formato del dni es correcto comparando el patron descrito en ER_DNI con el dni
-
-        Pattern patron;
-        Matcher comparador;
-        Boolean comprobacion;
-
-
-        patron = Pattern.compile(ER_DNI);
-        comparador = patron.matcher(dni);
-        comprobacion=comprobarLetraDni(dni);
-
-        //Si el formato es correcto y la letra tambien, asignamos el valor, sino lanzamos excepciones
-
-        if(comparador.matches()&& comprobacion)
-            this.dni = dni;
-        else if (comparador.matches())
-            throw new IllegalArgumentException("El dni no tiene un formato válido");
-        else
-            throw new IllegalArgumentException("La letra del DNI no es correcta");
+    public void setDni(String dni) {
+        comprobarLetraDni(dni);
+        this.dni = dni;
     }
 
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    private void setFechaNacimiento(LocalDate fechaNacimiento) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMATO_FECHA);
-        String fechaFormateada = fechaNacimiento.format(formatter);
-
-        if (fechaFormateada.equals(fechaNacimiento.toString()))
-            this.fechaNacimiento = fechaNacimiento;
-        else
-            throw new IllegalArgumentException("El formato de la fecha no es válido");
-    }
-
-    private String getIniciales(){
-
-        StringBuilder iniciales = new StringBuilder();
-
-        // Dividir el nombre en palabras
-        String[] palabras = nombre.split("\\s+");
-
-        // Obtener la primera letra de cada palabra y agregarla a las iniciales
-        for (String palabra : palabras) {
-            if (!palabra.isEmpty()) {
-                iniciales.append(palabra.charAt(0));
-            }
-        }
-        return iniciales.toString().toUpperCase();
-    }
-
-    public Huesped(String nombre, String telefono, String correo, String dni, LocalDate fechaNacimiento) {
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.correo = correo;
-        this.dni = dni;
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public Huesped(Huesped huesped) {
-        this.nombre = huesped.nombre;
-        this.telefono = huesped.telefono;
-        this.correo = huesped.correo;
-        this.dni = huesped.dni;
-        this.fechaNacimiento = huesped.fechaNacimiento;
+    public Huesped(String nombre, String telefono, String correo, String dni, LocalDate fechaNacimiento) {
+        setNombre(nombre);
+        setTelefono(telefono);
+        setCorreo(correo);
+        setDni(dni);
+        setFechaNacimiento(fechaNacimiento);
     }
 
+    public Huesped(Huesped huesped) {
+        this.nombre=huesped.nombre;
+        this.telefono=huesped.telefono;
+        this.correo=huesped.correo;
+        this.dni=huesped.dni;
+        this.fechaNacimiento=huesped.fechaNacimiento;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Huesped huesped = (Huesped) obj;
+        return dni.equals(huesped.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dni);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("nombre=%s, DNI=%s, correo=%s, teléfono=%s, fecha nacimiento=%s",
+                nombre, dni, correo, telefono, fechaNacimiento.format(DateTimeFormatter.ofPattern(FORMATO_FECHA)));
+    }
 }
-
-

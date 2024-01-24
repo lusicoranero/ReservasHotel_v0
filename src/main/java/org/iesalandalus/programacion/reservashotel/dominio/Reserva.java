@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Reserva {
 
-    private final int MAX_NUMERO_MESES_RESERVA=2;
+    private final int MAX_NUMERO_MESES_RESERVA=8;
     private final int MAX_HORAS_POSTERIOR_CHECKOUT=12;
     public final String FORMATO_FECHA_RESERVA= "dd/MM/yyyy";
     private Huesped huesped;
