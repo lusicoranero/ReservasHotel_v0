@@ -96,6 +96,7 @@ public class Huesped {
     }
 
     public Huesped(String nombre, String telefono, String correo, String dni, LocalDate fechaNacimiento) {
+
         setNombre(nombre);
         setTelefono(telefono);
         setCorreo(correo);
@@ -104,6 +105,10 @@ public class Huesped {
     }
 
     public Huesped(Huesped huesped) {
+
+        if (huesped==null)
+            throw new IllegalArgumentException("ERROR: Un huesped no puede ser nulo");
+
         this.nombre=huesped.nombre;
         this.telefono=huesped.telefono;
         this.correo=huesped.correo;

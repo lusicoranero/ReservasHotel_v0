@@ -19,7 +19,7 @@ public class Habitacion {
 
     public Habitacion( int planta, int puerta, double precio, String descripcion) {
 
-        setPlanta();
+        setPlanta(planta);
         setPuerta(puerta);
         setIdentificador(identificador);
         setPrecio(precio);
@@ -28,7 +28,7 @@ public class Habitacion {
 
     public Habitacion( int planta, int puerta, double precio, TipoHabitacion tipoHabitacion, String descripcion){
 
-        setPlanta();
+        setPlanta(planta);
         setPuerta(puerta);
         setIdentificador(identificador);
         setPrecio(precio);
@@ -37,6 +37,10 @@ public class Habitacion {
     }
 
     public Habitacion (Habitacion habitacion){
+
+        if (habitacion==null)
+            throw new IllegalArgumentException("ERROR: La habitación no puede ser nula");
+
         this.identificador= habitacion.identificador;
         this.planta= habitacion.planta;
         this.puerta= habitacion.puerta;
@@ -58,9 +62,9 @@ public class Habitacion {
         return planta;
     }
 
-    private void setPlanta() {
-        if (planta>=MIN_NUMERO_PLANTA && planta <=MAX_NUMERO_PLANTA)
-            this.planta = planta;
+    private void setPlanta(int planta) {
+        if (this.planta >=MIN_NUMERO_PLANTA && this.planta <=MAX_NUMERO_PLANTA)
+            this.planta = this.planta;
         else
             throw new IllegalArgumentException("La planta debe estar entre "+MIN_NUMERO_PLANTA+" y "+MAX_NUMERO_PLANTA);
     }

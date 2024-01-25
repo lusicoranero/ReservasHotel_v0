@@ -128,6 +128,9 @@ public class Reserva {
 
     public Reserva (Reserva reserva){
 
+        if (reserva==null)
+            throw new IllegalArgumentException("ERROR: Una reserva no puede ser nula");
+
         this.huesped=reserva.huesped;
         this.habitacion=reserva.habitacion;
         this.regimen=reserva.regimen;

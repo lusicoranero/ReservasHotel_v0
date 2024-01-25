@@ -1,5 +1,7 @@
 package org.iesalandalus.programacion.reservashotel.negocio;
 
+import org.iesalandalus.programacion.reservashotel.dominio.Huesped;
+
 import java.time.LocalDate;
 
 public class Huespedes {
@@ -13,8 +15,9 @@ public class Huespedes {
         this.listaHuespedes = new Huesped[capacidad];
     }
 
-    public Huesped[] copiaProfundaHuespedes() {
-        // Devuelve una copia profunda del array
+    private Huesped[] copiaProfundaHuespedes() {
+        // Aqui hacemos la copia profunda recorriendo el array
+
         Huesped[] copiaHuespedes = new Huesped[tamaño];
         for (int i = 0; i < tamaño; i++) {
             copiaHuespedes[i] = new Huesped(
@@ -29,23 +32,25 @@ public class Huespedes {
     }
 
     public int getTamaño() {
+
         return tamaño;
     }
 
     public int getCapacidad() {
+
         return capacidad;
     }
 
-    public void insertar(Huesped nuevoHuesped) {
+    public void insertar(Huesped huesped) {
         if (tamaño < capacidad) {
-            listaHuespedes[tamaño] = nuevoHuesped;
+            listaHuespedes[tamaño] = huesped;
             tamaño++;
         } else {
             throw new IllegalStateException("No hay capacidad para más huéspedes");
         }
     }
 
-    public int buscarIndice(Huesped huesped) {
+    private int buscarIndice(Huesped huesped) {
         for (int i = 0; i < tamaño; i++) {
             if (listaHuespedes[i].equals(huesped)) {
                 return i;
@@ -54,8 +59,12 @@ public class Huespedes {
         return -1;
     }
 
-    public boolean tamañoSuperado(int indice) {
+    private boolean tamañoSuperado(int indice) {
         return indice >= tamaño;
+    }
+
+    private boolean capacidadSuperada(int indice) {
+        return indice >= capacidad;
     }
 
     public Huesped buscar(Huesped huesped) {
