@@ -14,6 +14,11 @@ public enum Regimen {
         this.incrementoPrecio= incrementoPrecio;
     }
 
+    public double getIncrementoPrecio(){
+        return incrementoPrecio;
+    }
+
+
     @Override
     public String toString() {
         return "Regimen "+ descripcion + '\'' +

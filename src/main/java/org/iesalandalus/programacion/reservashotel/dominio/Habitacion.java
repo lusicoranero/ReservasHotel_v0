@@ -10,7 +10,7 @@ public class Habitacion {
     public final int MAX_NUMERO_PUERTA=15;
     public final int MIN_NUMERO_PLANTA=1;
     public final int MAX_NUMERO_PLANTA=3;
-    private String identificador;
+    private String identificador=null;
     private int planta;
     private int puerta;
     private double precio;
@@ -18,54 +18,89 @@ public class Habitacion {
     private String descripcion;
 
     public Habitacion( int planta, int puerta, double precio, String descripcion) {
-        if (planta>=MIN_NUMERO_PLANTA && planta <=MAX_NUMERO_PLANTA)
-            this.planta = planta;
-        else
-            throw new IllegalArgumentException("La planta debe estar entre 1 y 3");
 
-        if(puerta>=MIN_NUMERO_PUERTA && puerta<=MAX_NUMERO_PUERTA)
-            this.puerta = puerta;
-        else
-            throw new IllegalArgumentException("La puerta debe estar entre 1 y 15");
-
-        identificador = String.valueOf(this.planta) + String.valueOf(this.puerta);
-
-        if(precio>=MIN_PRECIO_HABITACION && precio <=MAX_PRECIO_HABITACION)
-            this.precio = precio;
-
-        this.descripcion = descripcion;
-    }
-    public Habitacion( int planta, int puerta, double precio, TipoHabitacion tipoHabitacion, String descripcion) {
-        if (planta>=MIN_NUMERO_PLANTA && planta <=MAX_NUMERO_PLANTA)
-            this.planta = planta;
-        else
-            throw new IllegalArgumentException("La planta debe estar entre 1 y 3");
-
-        if(puerta>=MIN_NUMERO_PUERTA && puerta<=MAX_NUMERO_PUERTA)
-            this.puerta = puerta;
-        else
-            throw new IllegalArgumentException("La puerta debe estar entre 1 y 15");
-
-        identificador = String.valueOf(this.planta) + String.valueOf(this.puerta);
-
-        if(precio>=MIN_PRECIO_HABITACION && precio <=MAX_PRECIO_HABITACION)
-            this.precio = precio;
-
-        this.tipoHabitacion = tipoHabitacion;
-        this.descripcion = descripcion;
+        setPlanta();
+        setPuerta(puerta);
+        setIdentificador(identificador);
+        setPrecio(precio);
+        setDescripcion(descripcion);
     }
 
-    public Habitacion (Habitacion otraHabitacion){
-        this.identificador= otraHabitacion.identificador;
-        this.planta= otraHabitacion.planta;
-        this.puerta= otraHabitacion.puerta;
-        this.precio= otraHabitacion.precio;
-        this.tipoHabitacion=otraHabitacion.tipoHabitacion;
-        this.descripcion= otraHabitacion.descripcion;
+    public Habitacion( int planta, int puerta, double precio, TipoHabitacion tipoHabitacion, String descripcion){
+
+        setPlanta();
+        setPuerta(puerta);
+        setIdentificador(identificador);
+        setPrecio(precio);
+        setTipoHabitacion(tipoHabitacion);
+        setDescripcion(descripcion);
+    }
+
+    public Habitacion (Habitacion habitacion){
+        this.identificador= habitacion.identificador;
+        this.planta= habitacion.planta;
+        this.puerta= habitacion.puerta;
+        this.precio= habitacion.precio;
+        this.tipoHabitacion=habitacion.tipoHabitacion;
+        this.descripcion= habitacion.descripcion;
     }
 
     public String getIdentificador() {
         return identificador;
+    }
+
+    private void setIdentificador(String identificador) {
+        identificador = String.valueOf(this.planta) + String.valueOf(this.puerta);
+        this.identificador = identificador;
+    }
+
+    public int getPlanta() {
+        return planta;
+    }
+
+    private void setPlanta() {
+        if (planta>=MIN_NUMERO_PLANTA && planta <=MAX_NUMERO_PLANTA)
+            this.planta = planta;
+        else
+            throw new IllegalArgumentException("La planta debe estar entre "+MIN_NUMERO_PLANTA+" y "+MAX_NUMERO_PLANTA);
+    }
+
+    public int getPuerta() {
+        return puerta;
+    }
+
+    private void setPuerta(int puerta) {
+        if(puerta>=MIN_NUMERO_PUERTA && puerta<=MAX_NUMERO_PUERTA)
+            this.puerta = puerta;
+        else
+            throw new IllegalArgumentException("La puerta debe estar entre "+MIN_NUMERO_PUERTA+ " y "+MAX_NUMERO_PUERTA );
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(double precio) {
+        if(precio>=MIN_PRECIO_HABITACION && precio <=MAX_PRECIO_HABITACION)
+            this.precio = precio;
+        else
+            throw new IllegalArgumentException("El precio debe estar entre "+MIN_PRECIO_HABITACION+" y "+MAX_PRECIO_HABITACION );
+    }
+
+    public TipoHabitacion getTipoHabitacion() {
+        return tipoHabitacion;
+    }
+
+    public void setTipoHabitacion(TipoHabitacion tipoHabitacion) {
+        this.tipoHabitacion = tipoHabitacion;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     @Override
